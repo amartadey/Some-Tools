@@ -5,611 +5,537 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
-        content="Collection of development tools for PHP and Python - Email diagnostics, server diagnostics, image optimization, and inode counting utilities">
+        content="Collection of premium development tools for PHP and Python - Email diagnostics, server diagnostics, WordPress automation, and image optimization.">
     <meta name="keywords"
-        content="development tools, PHP tools, Python tools, email diagnostic, server diagnostic, image optimizer, inode counter">
+        content="development tools, PHP tools, Python tools, email diagnostic, server diagnostic, image optimizer, inode counter, wordpress installer">
     <meta name="author" content="Developer Tools Collection">
-    <title>Development Tools Collection</title>
+    <title>DevTools | Professional Utilities</title>
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+
     <style>
+        :root {
+            /* Color Palette - Deep Space / Cyberpunk Lite */
+            --bg-color: #0f111a;
+            --bg-gradient: radial-gradient(circle at 15% 50%, rgba(76, 29, 149, 0.15), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(56, 189, 248, 0.15), transparent 25%);
+
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --card-hover-border: rgba(255, 255, 255, 0.2);
+            --card-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
+
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-accent: #38bdf8;
+
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            --secondary-gradient: linear-gradient(135deg, #3b82f6 0%, #2dd4bf 100%);
+            --danger-gradient: linear-gradient(135deg, #f43f5e 0%, #fb7185 100%);
+
+            --php-color: #777bb4;
+            --python-color: #3776ab;
+
+            --radius-md: 16px;
+            --radius-lg: 24px;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        :root {
-            --primary-color: #576A8F;
-            --secondary-color: #B7BDF7;
-            --accent-color: #FF7444;
-            --background-color: #fefbf1;
-            --text-color: #292929;
-            --card-bg: #ffffff;
-            --shadow-subtle: 0 2px 8px rgba(87, 106, 143, 0.08);
-            --shadow-hover: 0 8px 24px rgba(87, 106, 143, 0.15);
-            --border-radius: 12px;
-            --max-width: 1200px;
-            --spacing-xs: 8px;
-            --spacing-sm: 16px;
-            --spacing-md: 24px;
-            --spacing-lg: 32px;
-            --spacing-xl: 48px;
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-color);
+            background-image: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            font-size: 16px;
-            line-height: 1.6;
-            color: var(--text-color);
-            background-color: var(--background-color);
-            overflow-x: hidden;
+        /* Typography */
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: white;
+        }
+
+        p {
+            color: var(--text-secondary);
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.2em 0.4em;
+            border-radius: 4px;
+            color: var(--text-accent);
+        }
+
+        /* Layout */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
         }
 
         /* Header */
         header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            color: white;
-            padding: var(--spacing-xl) var(--spacing-md);
+            padding: 100px 0 80px;
             text-align: center;
             position: relative;
-            overflow: hidden;
         }
 
+        /* Ambient Glow behind header */
         header::before {
             content: '';
             position: absolute;
-            top: -50%;
-            right: -10%;
-            width: 500px;
-            height: 500px;
-            background: rgba(255, 255, 255, 0.05);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60%;
+            height: 150px;
+            background: var(--primary-gradient);
+            filter: blur(80px);
+            opacity: 0.3;
+            z-index: -1;
             border-radius: 50%;
-            animation: float 20s infinite ease-in-out;
-        }
-
-        header::after {
-            content: '';
-            position: absolute;
-            bottom: -30%;
-            left: -5%;
-            width: 400px;
-            height: 400px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 50%;
-            animation: float 15s infinite ease-in-out reverse;
-        }
-
-        @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0) rotate(0deg);
-            }
-
-            50% {
-                transform: translateY(-20px) rotate(5deg);
-            }
-        }
-
-        .header-content {
-            position: relative;
-            z-index: 1;
-            max-width: var(--max-width);
-            margin: 0 auto;
         }
 
         h1 {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: var(--spacing-sm);
-            animation: slideDown 0.8s ease-out;
+            font-size: 3.5rem;
+            margin-bottom: 24px;
+            background: linear-gradient(to right, #fff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.1;
         }
 
         .subtitle {
             font-size: 1.25rem;
-            font-weight: 400;
-            opacity: 0.95;
-            animation: slideDown 0.8s ease-out 0.2s both;
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Main Container */
-        .container {
-            max-width: var(--max-width);
+            max-width: 600px;
             margin: 0 auto;
-            padding: var(--spacing-xl) var(--spacing-md);
+            opacity: 0.9;
         }
 
-        /* Section Headers */
+        /* Section Styling */
         .section-header {
-            text-align: center;
-            margin-bottom: var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 32px;
+            margin-top: 60px;
         }
 
         .section-title {
             font-size: 2rem;
-            font-weight: 600;
-            color: var(--primary-color);
-            margin-bottom: var(--spacing-sm);
             position: relative;
-            display: inline-block;
         }
 
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 4px;
-            background: linear-gradient(90deg, var(--accent-color), var(--secondary-color));
-            border-radius: 2px;
+        .section-line {
+            height: 1px;
+            flex-grow: 1;
+            background: linear-gradient(90deg, var(--card-border), transparent);
         }
 
-        .section-description {
-            color: var(--text-color);
-            opacity: 0.8;
-            max-width: 600px;
-            margin: var(--spacing-md) auto 0;
-        }
-
-        /* Tool Cards Grid */
+        /* Grid */
         .tools-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: var(--spacing-lg);
-            margin-bottom: var(--spacing-xl);
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 32px;
         }
 
+        /* Cards */
         .tool-card {
             background: var(--card-bg);
-            border-radius: var(--border-radius);
-            padding: var(--spacing-lg);
-            box-shadow: var(--shadow-subtle);
-            transition: all 0.3s ease;
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-md);
+            padding: 32px;
             position: relative;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(12px);
+            display: flex;
+            flex-direction: column;
             overflow: hidden;
-            animation: fadeInUp 0.6s ease-out both;
-        }
-
-        .tool-card:nth-child(1) {
-            animation-delay: 0.1s;
-        }
-
-        .tool-card:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .tool-card:nth-child(3) {
-            animation-delay: 0.3s;
-        }
-
-        .tool-card:nth-child(4) {
-            animation-delay: 0.4s;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         .tool-card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.3s ease;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, transparent 100%);
+            pointer-events: none;
         }
 
         .tool-card:hover {
             transform: translateY(-8px);
-            box-shadow: var(--shadow-hover);
+            border-color: var(--card-hover-border);
+            box-shadow: var(--card-shadow), 0 0 20px rgba(99, 102, 241, 0.1);
         }
 
-        .tool-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .tool-icon {
-            width: 64px;
-            height: 64px;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            border-radius: var(--border-radius);
+        /* Badges */
+        .badges-container {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            margin-bottom: var(--spacing-md);
-            transition: transform 0.3s ease;
+            gap: 8px;
+            margin-bottom: 20px;
         }
 
-        .tool-card:hover .tool-icon {
-            transform: scale(1.1) rotate(5deg);
-        }
-
-        .tool-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            background: var(--secondary-color);
-            color: var(--primary-color);
+        .category-badge {
             font-size: 0.75rem;
             font-weight: 600;
+            padding: 4px 10px;
             border-radius: 20px;
-            margin-bottom: var(--spacing-sm);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.05em;
         }
 
-        .new-badge {
-            background: var(--accent-color);
-            color: white;
-            margin-left: 8px;
+        .badge-php {
+            background: rgba(119, 123, 180, 0.2);
+            color: #aeb2f5;
+            border: 1px solid rgba(119, 123, 180, 0.3);
         }
 
-        .updated-badge {
-            background: #10b981;
-            color: white;
-            margin-left: 8px;
+        .badge-python {
+            background: rgba(55, 118, 171, 0.2);
+            color: #6fbaff;
+            border: 1px solid rgba(55, 118, 171, 0.3);
+        }
+
+        .badge-new {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .badge-updated {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        /* Tool Content */
+        .tool-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: inline-block;
+            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.3));
         }
 
         .tool-title {
             font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--primary-color);
-            margin-bottom: var(--spacing-sm);
+            margin-bottom: 12px;
+            color: #fff;
         }
 
         .tool-description {
-            color: var(--text-color);
-            opacity: 0.8;
-            margin-bottom: var(--spacing-md);
-            line-height: 1.7;
+            font-size: 0.95rem;
+            margin-bottom: 24px;
+            flex-grow: 1;
         }
 
-        .tool-features {
+        .feature-list {
             list-style: none;
-            margin-bottom: var(--spacing-md);
+            margin-bottom: 28px;
+            padding: 0;
         }
 
-        .tool-features li {
-            padding: var(--spacing-xs) 0;
-            color: var(--text-color);
-            opacity: 0.75;
+        .feature-list li {
             font-size: 0.9rem;
-            position: relative;
-            padding-left: 24px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            color: var(--text-secondary);
         }
 
-        .tool-features li::before {
-            content: '✓';
-            position: absolute;
-            left: 0;
-            color: var(--accent-color);
-            font-weight: 600;
+        .feature-list li::before {
+            content: '→';
+            color: var(--text-accent);
+            margin-right: 10px;
+            font-weight: bold;
         }
 
-        .download-btn {
-            display: inline-block;
-            padding: 12px 28px;
-            background: linear-gradient(135deg, var(--accent-color), #ff8c66);
+        /* Buttons */
+        .btn-download {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 14px 20px;
+            background: var(--card-border);
             color: white;
             text-decoration: none;
-            border-radius: var(--border-radius);
+            border-radius: 12px;
             font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(255, 116, 68, 0.3);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
             overflow: hidden;
-        }
-
-        .download-btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        .download-btn:hover::before {
-            width: 300px;
-            height: 300px;
-        }
-
-        .download-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 116, 68, 0.4);
-        }
-
-        .download-btn span {
-            position: relative;
+            border: 1px solid transparent;
             z-index: 1;
+        }
+
+        /* Unified Hover Effect */
+        .btn-download:hover {
+            background: var(--primary-gradient);
+            border-color: transparent;
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Info Section */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-top: 80px;
+            margin-bottom: 80px;
+        }
+
+        .info-card {
+            background: rgba(15, 23, 42, 0.6);
+            padding: 30px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--card-border);
+        }
+
+        .info-card h3 {
+            margin-bottom: 16px;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         /* Footer */
         footer {
-            background: var(--primary-color);
-            color: white;
+            border-top: 1px solid var(--card-border);
+            padding: 60px 0;
             text-align: center;
-            padding: var(--spacing-lg) var(--spacing-md);
-            margin-top: var(--spacing-xl);
-        }
-
-        footer p {
-            opacity: 0.9;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.2);
         }
 
         footer a {
-            color: var(--secondary-color);
+            color: var(--text-primary);
             text-decoration: none;
-            font-weight: 600;
-            transition: color 0.3s ease;
+            border-bottom: 1px dotted var(--text-secondary);
+            transition: color 0.2s;
         }
 
         footer a:hover {
-            color: var(--accent-color);
+            color: var(--text-accent);
+            border-bottom-color: var(--text-accent);
         }
 
         /* Responsive */
         @media (max-width: 768px) {
             h1 {
-                font-size: 2rem;
+                font-size: 2.5rem;
             }
 
-            .subtitle {
-                font-size: 1rem;
-            }
-
-            .section-title {
-                font-size: 1.5rem;
+            header {
+                padding: 60px 0;
             }
 
             .tools-grid {
                 grid-template-columns: 1fr;
-                gap: var(--spacing-md);
             }
-
-            .container {
-                padding: var(--spacing-md) var(--spacing-sm);
-            }
-        }
-
-        /* Info Section */
-        .info-section {
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            padding: var(--spacing-lg);
-            margin-bottom: var(--spacing-xl);
-            box-shadow: var(--shadow-subtle);
-            border-left: 4px solid var(--accent-color);
-        }
-
-        .info-section h3 {
-            color: var(--primary-color);
-            margin-bottom: var(--spacing-sm);
-            font-size: 1.25rem;
-        }
-
-        .info-section p {
-            color: var(--text-color);
-            opacity: 0.8;
-            line-height: 1.7;
-        }
-
-        .info-section code {
-            background: var(--background-color);
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-            color: var(--accent-color);
-            font-size: 0.9em;
         }
     </style>
 </head>
 
 <body>
+
     <header>
-        <div class="header-content">
-            <h1>🛠️ Development Tools Collection</h1>
-            <p class="subtitle">Professional utilities for PHP and Python developers</p>
+        <div class="container">
+            <h1>DevTools Collection</h1>
+            <p class="subtitle">Premium, battle-tested utilities for PHP and Python developers. Diagnose, optimize, and
+                deploy with confidence.</p>
         </div>
     </header>
 
     <div class="container">
-        <!-- PHP Tools Section -->
-        <section>
-            <div class="section-header">
-                <h2 class="section-title">PHP Tools</h2>
-                <p class="section-description">
-                    Comprehensive diagnostic and testing utilities for PHP development and server management
+
+        <!-- PHP Tools -->
+        <div class="section-header">
+            <h2 class="section-title">PHP Utilities</h2>
+            <div class="section-line"></div>
+        </div>
+
+        <div class="tools-grid">
+
+            <!-- WordPress Installer -->
+            <div class="tool-card">
+                <div class="badges-container">
+                    <span class="category-badge badge-php">PHP</span>
+                </div>
+                <div class="tool-icon">🚀</div>
+                <h3 class="tool-title">WordPress Installer</h3>
+                <p class="tool-description">
+                    Single-file installer that automates the downloading, extraction, and cleanup of WordPress. No more
+                    manual FTP uploads of thousands of files.
                 </p>
+                <ul class="feature-list">
+                    <li>Single-click download & extract</li>
+                    <li>Auto-cleanup of zip files</li>
+                    <li>Self-destructing installer script</li>
+                    <li>Fastest way to deploy WP</li>
+                </ul>
+                <a href="https://raw.githubusercontent.com/amartadey/Some-Tools/main/php-tools/wordpress_installer.php"
+                    class="btn-download" download>
+                    Download Installer
+                </a>
             </div>
 
-            <div class="tools-grid">
-                <!-- Email Diagnostic Tool -->
-                <div class="tool-card">
-                    <div class="tool-icon">📧</div>
-                    <span class="tool-badge">PHP</span>
-                    <!-- <span class="updated-badge">v2.0 Updated</span> -->
-                    <h3 class="tool-title">Email Diagnostic Tool</h3>
-                    <p class="tool-description">
-                        Enhanced email diagnostics with password protection, SPF/DKIM/DMARC validation, blacklist
-                        checking, and deliverability scoring. Perfect for debugging email issues.
-                    </p>
-                    <ul class="tool-features">
-                        <li>🔒 Password protection & self-delete</li>
-                        <li>✉️ SPF/DKIM/DMARC validation</li>
-                        <li>🚫 Blacklist checker (4 major lists)</li>
-                        <li>🔄 Reverse DNS verification</li>
-                        <li>📊 Email deliverability score (0-100)</li>
-                        <li>📋 Copy to clipboard & JSON export</li>
-                    </ul>
-                    <a href="https://raw.githubusercontent.com/amartadey/Some-Tools/main/php-tools/email_diagnostic.php"
-                        class="download-btn" download>
-                        <span>⬇ Download Tool</span>
-                    </a>
+            <!-- Email Diagnostic V3 -->
+            <div class="tool-card">
+                <div class="badges-container">
+                    <span class="category-badge badge-php">PHP</span>
+                    <span class="category-badge badge-updated">v3.0</span>
                 </div>
-
-                <!-- Server Diagnostics Tool -->
-                <div class="tool-card">
-                    <div class="tool-icon">🔍</div>
-                    <span class="tool-badge">PHP</span>
-                    <h3 class="tool-title">Server Diagnostics Tool</h3>
-                    <p class="tool-description">
-                        An all-in-one server diagnostics tool providing comprehensive insights into server capabilities,
-                        limitations, and available features.
-                    </p>
-                    <ul class="tool-features">
-                        <li>PHP configuration and limits analysis</li>
-                        <li>Database connectivity testing</li>
-                        <li>File system permissions check</li>
-                        <li>Network & external connections test</li>
-                        <li>Security settings audit</li>
-                    </ul>
-                    <a href="https://raw.githubusercontent.com/amartadey/Some-Tools/main/php-tools/server_diagnostics.php"
-                        class="download-btn" download>
-                        <span>⬇ Download Tool</span>
-                    </a>
-                </div>
-            </div>
-        </section>
-
-        <!-- Python Tools Section -->
-        <section>
-            <div class="section-header">
-                <h2 class="section-title">Python Tools</h2>
-                <p class="section-description">
-                    Powerful automation and optimization utilities for Python developers
+                <div class="tool-icon">📧</div>
+                <h3 class="tool-title">Email Diagnostics</h3>
+                <p class="tool-description">
+                    The ultimate email debugging tool. Now with multi-domain support and detailed SMTP logging. Verify
+                    if your server can actually send emails.
                 </p>
+                <ul class="feature-list">
+                    <li>SPF / DKIM / DMARC Validation</li>
+                    <li>Multi-domain configuration</li>
+                    <li>Smart Fallback Sender</li>
+                    <li>Real-time Blacklist Check</li>
+                </ul>
+                <a href="https://raw.githubusercontent.com/amartadey/Some-Tools/main/php-tools/email_diagnostic_v3.php"
+                    class="btn-download" download>
+                    Download Tool
+                </a>
             </div>
 
-            <div class="tools-grid">
-                <!-- Image Optimizer -->
-                <div class="tool-card">
-                    <div class="tool-icon">🖼️</div>
-                    <span class="tool-badge">Python</span>
-                    <h3 class="tool-title">Image Optimizer</h3>
-                    <p class="tool-description">
-                        A Python script that batch optimizes images in a directory, reducing file sizes while
-                        maintaining quality. Perfect for web optimization.
-                    </p>
-                    <ul class="tool-features">
-                        <li>Supports JPG, PNG, WebP, BMP, TIFF</li>
-                        <li>Resizes to target dimensions (1000x1000)</li>
-                        <li>Adjustable quality settings (default 85%)</li>
-                        <li>Converts PNG to JPG for better compression</li>
-                        <li>Shows detailed size reduction statistics</li>
-                    </ul>
-                    <a href="https://raw.githubusercontent.com/amartadey/Some-Tools/main/python-tools/image-optimize.py"
-                        class="download-btn" download>
-                        <span>⬇ Download Tool</span>
-                    </a>
+            <!-- Server Diagnostics -->
+            <div class="tool-card">
+                <div class="badges-container">
+                    <span class="category-badge badge-php">PHP</span>
                 </div>
-
-                <!-- Inode Counter -->
-                <div class="tool-card">
-                    <div class="tool-icon">🔢</div>
-                    <span class="tool-badge">Python</span>
-                    <!-- <span class="new-badge">New</span> -->
-                    <h3 class="tool-title">Inode Counter</h3>
-                    <p class="tool-description">
-                        Count files and directories (inodes) to estimate Linux server hosting requirements. Essential
-                        for checking inode limits before deployment.
-                    </p>
-                    <ul class="tool-features">
-                        <li>🎯 Animated progress spinner</li>
-                        <li>📊 Real-time file/directory counting</li>
-                        <li>📈 File type breakdown with percentages</li>
-                        <li>🐧 Linux hosting recommendations</li>
-                        <li>💾 Export report to text file</li>
-                        <li>🔍 Largest files & deepest path analysis</li>
-                    </ul>
-                    <a href="https://raw.githubusercontent.com/amartadey/Some-Tools/main/python-tools/inode-counter.py"
-                        class="download-btn" download>
-                        <span>⬇ Download Tool</span>
-                    </a>
-                </div>
+                <div class="tool-icon">🔍</div>
+                <h3 class="tool-title">Server Analyzer</h3>
+                <p class="tool-description">
+                    Comprehensive deep-dive into your server's capabilities. Check permissions, connectivity, headers,
+                    and environment limits in one view.
+                </p>
+                <ul class="feature-list">
+                    <li>PHP Config & Limit Analysis</li>
+                    <li>Database Connectivity Test</li>
+                    <li>File Permission Audit</li>
+                    <li>Outbound Connection Test</li>
+                </ul>
+                <a href="https://raw.githubusercontent.com/amartadey/Some-Tools/main/php-tools/server_diagnostics.php"
+                    class="btn-download" download>
+                    Download Tool
+                </a>
             </div>
-        </section>
 
-        <!-- Usage Information -->
-        <div class="info-section">
-            <h3>📖 How to Use These Tools</h3>
-            <p>
-                <strong>PHP Tools:</strong> Upload the <code>.php</code> file to your web server and access it through
-                your browser.
-                The tools will automatically run diagnostics and display results in a beautiful, easy-to-read format.
-            </p>
-            <p style="margin-top: 12px;">
-                <strong>Python Tools:</strong> Download the <code>.py</code> file and run it using Python 3.
-                Make sure you have the required dependencies installed (e.g., <code>pip install Pillow</code> for the
-                image optimizer).
-            </p>
         </div>
 
-        <div class="info-section">
-            <h3>🚀 Getting Started</h3>
-            <p>
-                Click the download button on any tool card to get started. Each tool is self-contained and ready to use.
-                For detailed documentation and usage examples, visit the GitHub repository.
-            </p>
+        <!-- Python Tools -->
+        <div class="section-header">
+            <h2 class="section-title">Python Scripts</h2>
+            <div class="section-line"></div>
         </div>
 
-        <div class="info-section">
-            <h3>✨ What's New</h3>
-            <p>
-                <strong>Email Diagnostic Tool v2.0:</strong> Major update with password protection, SPF/DKIM/DMARC
-                validation,
-                blacklist checking, reverse DNS verification, deliverability scoring, and compressed UI.
-            </p>
-            <p style="margin-top: 12px;">
-                <strong>Inode Counter:</strong> Brand new tool to help you estimate inode usage before deploying to
-                Linux servers.
-                Features animated progress spinner and comprehensive hosting recommendations.
-            </p>
+        <div class="tools-grid">
+
+            <!-- Image Optimizer -->
+            <div class="tool-card">
+                <div class="badges-container">
+                    <span class="category-badge badge-python">Python</span>
+                </div>
+                <div class="tool-icon">🖼️</div>
+                <h3 class="tool-title">Image Optimizer</h3>
+                <p class="tool-description">
+                    Batch optimize images for the web. Reduces file size significantly while maintaining visual quality.
+                    Supports recursive directory scanning.
+                </p>
+                <ul class="feature-list">
+                    <li>Smart compression (WebP/JPG)</li>
+                    <li>Recursive folder processing</li>
+                    <li>Detailed savings report</li>
+                    <li>Auto-resize large assets</li>
+                </ul>
+                <a href="https://raw.githubusercontent.com/amartadey/Some-Tools/main/python-tools/image-optimize.py"
+                    class="btn-download" download>
+                    Download Script
+                </a>
+            </div>
+
+            <!-- Inode Counter -->
+            <div class="tool-card">
+                <div class="badges-container">
+                    <span class="category-badge badge-python">Python</span>
+                </div>
+                <div class="tool-icon">📊</div>
+                <h3 class="tool-title">Inode Counter</h3>
+                <p class="tool-description">
+                    Hit a file limit on your hosting? This tool visualizes exactly which folders are consuming your
+                    inode/file count allowance.
+                </p>
+                <ul class="feature-list">
+                    <li>Fast directory traversal</li>
+                    <li>Top offenders by count</li>
+                    <li>Visual progress bars</li>
+                    <li>Hosting recommendation engine</li>
+                </ul>
+                <a href="https://raw.githubusercontent.com/amartadey/Some-Tools/main/python-tools/inode-counter.py"
+                    class="btn-download" download>
+                    Download Script
+                </a>
+            </div>
+
         </div>
+
+        <!-- Info Grid -->
+        <div class="info-grid">
+            <div class="info-card">
+                <h3>⚡ Quick Start</h3>
+                <p>Download the standalone file you need and upload it to your server (PHP) or run locally (Python). No
+                    complex dependencies or installation wizards required.</p>
+            </div>
+            <div class="info-card">
+                <h3>🛡️ Secure by Design</h3>
+                <p>The PHP diagnostic tools include self-destruct mechanisms and password protection (Email Diag) to
+                    ensure you don't leave vulnerabilities behind.</p>
+            </div>
+            <div class="info-card">
+                <h3>🤝 Open Source</h3>
+                <p>Transparent code. Check the source on GitHub before running. Suggestions and PRs are welcome on the
+                    repository.</p>
+            </div>
+        </div>
+
     </div>
 
     <footer>
-        <p>
-            Made with ❤️ for developers |
-            <a href="https://github.com/amartadey/Some-Tools" target="_blank">View on GitHub</a>
-        </p>
-        <p style="margin-top: 8px; font-size: 0.9rem; opacity: 0.8;">
-            Open source tools for the development community
-        </p>
+        <div class="container">
+            <p>Built for the developer community. Open Source under MIT.</p>
+            <p style="margin-top: 10px;">
+                <a href="https://github.com/amartadey/Some-Tools" target="_blank">View Repository</a> •
+                <a href="https://github.com/amartadey/Some-Tools/issues" target="_blank">Report Issue</a>
+            </p>
+        </div>
     </footer>
-</body>
 
+</body>
 
 </html>
