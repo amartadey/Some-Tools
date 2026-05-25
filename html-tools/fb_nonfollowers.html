@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Facebook Non-Followers Finder</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+    :root {
+      --bg: #0d0f14;
+      --surface: #161920;
+      --border: #252830;
+      --accent: #4f8ef7;
+      --accent2: #f7534f;
+      --text: #e8eaf0;
+      --muted: #6b7280;
+      --success: #34d399;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 40px;
+    }
+
+    .badge {
+      display: inline-block;
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      background: var(--accent);
+      color: #fff;
+      padding: 3px 8px;
+      border-radius: 3px;
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(20px, 4vw, 30px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      color: #fff;
+    }
+
+    h1 span {
+      color: var(--accent);
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin-top: 8px;
+      font-size: 14px;
+      font-weight: 300;
+    }
+
+    /* Steps */
+    .steps {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    @media(max-width:600px) {
+      .steps {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .step::before {
+      content: attr(data-n);
+      position: absolute;
+      top: -10px;
+      right: 12px;
+      font-family: 'Space Mono', monospace;
+      font-size: 64px;
+      font-weight: 700;
+      color: var(--border);
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .step h3 {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 6px;
+      font-family: 'Space Mono', monospace;
+      letter-spacing: 0.04em;
+    }
+
+    .step p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .step code {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      background: #1e2230;
+      color: var(--accent);
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+
+    /* Script box */
+    .script-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .script-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .script-header h2 {
+      font-family: 'Space Mono', monospace;
+      font-size: 13px;
+      color: var(--accent);
+      letter-spacing: 0.06em;
+    }
+
+    .copy-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      letter-spacing: 0.04em;
+    }
+
+    .copy-btn:hover {
+      opacity: 0.85;
+    }
+
+    .copy-btn.copied {
+      background: var(--success);
+    }
+
+    pre {
+      background: #0a0c10;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      overflow-x: auto;
+      font-family: 'Space Mono', monospace;
+      font-size: 11.5px;
+      line-height: 1.7;
+      color: #c9d1d9;
+      max-height: 380px;
+      overflow-y: auto;
+    }
+
+    /* Syntax colors */
+    .kw {
+      color: #ff79c6;
+    }
+
+    .fn {
+      color: #50fa7b;
+    }
+
+    .str {
+      color: #f1fa8c;
+    }
+
+    .cm {
+      color: #6272a4;
+      font-style: italic;
+    }
+
+    .num {
+      color: #bd93f9;
+    }
+
+    /* Warning */
+    .warning {
+      border: 1px solid #f7534f44;
+      background: #f7534f0a;
+      border-radius: 8px;
+      padding: 14px 18px;
+      font-size: 13px;
+      color: #f7998a;
+      margin-bottom: 24px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .warning-icon {
+      font-size: 16px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* Result area */
+    .result-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+    }
+
+    .result-section h2 {
+      font-family: 'Space Mono', monospace;
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      margin-bottom: 16px;
+    }
+
+    textarea {
+      width: 100%;
+      background: #0a0c10;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      padding: 16px;
+      resize: vertical;
+      min-height: 120px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    textarea:focus {
+      border-color: var(--accent);
+    }
+
+    textarea::placeholder {
+      color: var(--muted);
+    }
+
+    .parse-btn {
+      margin-top: 12px;
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .parse-btn:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    #output {
+      margin-top: 20px;
+      display: none;
+    }
+
+    .stat-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .stat {
+      background: #0a0c10;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 18px;
+      text-align: center;
+      flex: 1;
+      min-width: 120px;
+    }
+
+    .stat .n {
+      font-family: 'Space Mono', monospace;
+      font-size: 24px;
+      font-weight: 700;
+      display: block;
+    }
+
+    .stat .l {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .stat.red .n {
+      color: var(--accent2);
+    }
+
+    .stat.blue .n {
+      color: var(--accent);
+    }
+
+    .stat.green .n {
+      color: var(--success);
+    }
+
+    .profile-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .profile-item {
+      background: #0a0c10;
+      border: 1px solid #f7534f33;
+      border-left: 3px solid var(--accent2);
+      border-radius: 6px;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .profile-item a {
+      color: var(--accent);
+      text-decoration: none;
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      word-break: break-all;
+    }
+
+    .profile-item a:hover {
+      text-decoration: underline;
+    }
+
+    .tag {
+      font-size: 10px;
+      background: #f7534f22;
+      color: var(--accent2);
+      padding: 2px 7px;
+      border-radius: 3px;
+      font-family: 'Space Mono', monospace;
+      flex-shrink: 0;
+      margin-left: 8px;
+    }
+
+    .section-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <header>
+      <div class="badge">TOOL</div>
+      <h1>Facebook <span>Non-Followers</span> Finder</h1>
+      <p class="subtitle">Find out who you follow that doesn't follow you back — no third-party apps needed.</p>
+    </header>
+
+    <div class="steps">
+      <div class="step" data-n="1">
+        <h3>STEP 1 — FOLLOWING PAGE</h3>
+        <p>Open your Facebook <code>/following</code> page. Scroll all the way to the bottom to load every profile. Then
+          open the browser console (<code>F12</code> → Console tab) and run <strong>Script A</strong> below.</p>
+      </div>
+      <div class="step" data-n="2">
+        <h3>STEP 2 — FOLLOWERS PAGE</h3>
+        <p>Open your Facebook <code>/followers</code> page. Scroll to the bottom again to load all profiles. Open the
+          console again and run <strong>Script B</strong> below.</p>
+      </div>
+      <div class="step" data-n="3">
+        <h3>STEP 3 — COPY OUTPUT</h3>
+        <p>Each script will print a JSON array in the console. Copy both outputs and paste them into the boxes below to
+          see who isn't following you back.</p>
+      </div>
+      <div class="step" data-n="4">
+        <h3>STEP 4 — SEE RESULTS</h3>
+        <p>Hit <strong>Find Non-Followers</strong> and this tool will compare both lists and highlight every profile
+          that's in your Following list but not in your Followers list.</p>
+      </div>
+    </div>
+
+    <div class="warning">
+      <span class="warning-icon">⚠️</span>
+      <span>Facebook frequently changes its page structure. If a script returns an empty array, Facebook may have
+        updated its HTML. The scripts below target the most common current selectors but may need updating. Never run
+        scripts from unknown sources — you can read every line here before using.</span>
+    </div>
+
+    <!-- Script A -->
+    <div class="script-section">
+      <div class="script-header">
+        <h2>SCRIPT A — Run on /following page</h2>
+        <button class="copy-btn" onclick="copyScript('scriptA', this)">Copy</button>
+      </div>
+      <pre id="scriptA">(function() {
+  // Scroll helper — loads dynamic content
+  // Run this on: facebook.com/[yourpage]/following
+  // After scrolling to the bottom manually
+
+  const links = new Set();
+
+  // Try multiple selector strategies Facebook uses
+  const anchors = document.querySelectorAll('a[href]');
+
+  anchors.forEach(a => {
+    const href = a.href;
+    // Match profile-style URLs: facebook.com/someusername
+    // Exclude nav links, ads, groups, pages meta links
+    if (
+      href.includes('facebook.com/') &&
+      !href.includes('/groups/') &&
+      !href.includes('/pages/') &&
+      !href.includes('/events/') &&
+      !href.includes('/hashtag/') &&
+      !href.includes('/help/') &&
+      !href.includes('/policies/') &&
+      !href.includes('/login') &&
+      !href.includes('/photo') &&
+      !href.includes('/video') &&
+      !href.includes('/posts/') &&
+      !href.includes('/permalink/') &&
+      !href.includes('/following') &&
+      !href.includes('/followers') &&
+      !href.includes('facebook.com/?') &&
+      a.closest('[role="listitem"], [data-pagelet], .x1yztbdb, .x78zum5')
+    ) {
+      // Normalise URL — strip query params & trailing slashes
+      try {
+        const url = new URL(href);
+        const clean = url.origin + url.pathname.replace(/\/$/, '');
+        if (clean !== 'https://www.facebook.com' && clean.split('/').length === 4) {
+          links.add(clean);
+        }
+      } catch(e) {}
+    }
+  });
+
+  const result = [...links];
+  console.log('%c✅ FOLLOWING list (' + result.length + ' profiles found)', 'color:#4f8ef7;font-weight:bold;font-size:14px');
+  console.log(JSON.stringify(result, null, 2));
+  copy(JSON.stringify(result)); // Auto-copies to clipboard in Chrome
+  console.log('%cAuto-copied to clipboard! Paste into the tool.', 'color:#34d399');
+})();</pre>
+    </div>
+
+    <!-- Script B -->
+    <div class="script-section">
+      <div class="script-header">
+        <h2>SCRIPT B — Run on /followers page</h2>
+        <button class="copy-btn" onclick="copyScript('scriptB', this)">Copy</button>
+      </div>
+      <pre id="scriptB">(function() {
+  // Run this on: facebook.com/[yourpage]/followers
+  // After scrolling to the bottom manually
+
+  const links = new Set();
+
+  const anchors = document.querySelectorAll('a[href]');
+
+  anchors.forEach(a => {
+    const href = a.href;
+    if (
+      href.includes('facebook.com/') &&
+      !href.includes('/groups/') &&
+      !href.includes('/pages/') &&
+      !href.includes('/events/') &&
+      !href.includes('/hashtag/') &&
+      !href.includes('/help/') &&
+      !href.includes('/policies/') &&
+      !href.includes('/login') &&
+      !href.includes('/photo') &&
+      !href.includes('/video') &&
+      !href.includes('/posts/') &&
+      !href.includes('/permalink/') &&
+      !href.includes('/following') &&
+      !href.includes('/followers') &&
+      !href.includes('facebook.com/?') &&
+      a.closest('[role="listitem"], [data-pagelet], .x1yztbdb, .x78zum5')
+    ) {
+      try {
+        const url = new URL(href);
+        const clean = url.origin + url.pathname.replace(/\/$/, '');
+        if (clean !== 'https://www.facebook.com' && clean.split('/').length === 4) {
+          links.add(clean);
+        }
+      } catch(e) {}
+    }
+  });
+
+  const result = [...links];
+  console.log('%c✅ FOLLOWERS list (' + result.length + ' profiles found)', 'color:#4f8ef7;font-weight:bold;font-size:14px');
+  console.log(JSON.stringify(result, null, 2));
+  copy(JSON.stringify(result));
+  console.log('%cAuto-copied to clipboard! Paste into the tool.', 'color:#34d399');
+})();</pre>
+    </div>
+
+    <!-- Chrome Extension -->
+    <div class="script-section" style="margin-bottom:24px;">
+      <div class="script-header">
+        <h2>🧩 CHROME EXTENSION — Fully Automated</h2>
+        <a href="https://raw.githubusercontent.com/amartadey/Some-Tools/main/html-tools/fb-nonfollowers-extension.zip"
+          download
+          style="background:var(--accent);color:#fff;border:none;padding:8px 16px;border-radius:6px;font-family:'Space Mono',monospace;font-size:11px;cursor:pointer;text-decoration:none;letter-spacing:.04em;display:inline-block;">
+          Download .zip
+        </a>
+      </div>
+
+      <div class="warning" style="margin-bottom:16px;">
+        <span class="warning-icon">🧩</span>
+        <span>The Chrome Extension automates all scrolling — no manual scrolling or console scripts needed. Install it
+          once and just click a button on the Facebook page.</span>
+      </div>
+
+      <!-- Install -->
+      <button onclick="toggleExt(this)"
+        style="width:100%;background:transparent;border:1px solid var(--border);color:var(--muted);padding:10px 16px;border-radius:8px;font-family:'Space Mono',monospace;font-size:11px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:8px;margin-bottom:0;">
+        📖 How to install &amp; use &nbsp;<span style="margin-left:auto;transition:transform .3s;"
+          class="ext-arrow">▼</span>
+      </button>
+      <div id="extGuide"
+        style="display:none;background:#0a0c10;border:1px solid var(--border);border-radius:8px;padding:18px 20px;margin-top:8px;font-size:12.5px;color:var(--muted);line-height:1.7;">
+
+        <p
+          style="color:var(--accent);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;margin-bottom:8px;">
+          INSTALL (takes 1 minute)</p>
+        <ol style="padding-left:18px;margin-bottom:16px;">
+          <li>Download and unzip the file</li>
+          <li>Open Chrome → go to <code>chrome://extensions</code></li>
+          <li>Toggle <strong style="color:var(--text);">Developer Mode</strong> ON (top-right corner)</li>
+          <li>Click <strong style="color:var(--text);">Load unpacked</strong> → select the
+            <code>fb-nonfollowers-extension</code> folder
+          </li>
+          <li>The extension icon appears in your toolbar ✅</li>
+        </ol>
+
+        <p
+          style="color:var(--accent);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;margin-bottom:8px;">
+          HOW TO USE</p>
+        <ul style="padding-left:18px;margin-bottom:16px;">
+          <li>Go to your Facebook <code>/following</code> page → click the blue 🔍 <strong
+              style="color:var(--text);">Scrape Following</strong> button (bottom-right) and wait for auto-scroll to
+            finish</li>
+          <li>Go to your <code>/followers</code> page → click 🔍 <strong style="color:var(--text);">Scrape
+              Followers</strong> and wait</li>
+          <li>Click the extension icon in Chrome toolbar → hit <strong style="color:var(--text);">Compare Lists</strong>
+          </li>
+          <li>See every profile that doesn't follow back, with clickable links</li>
+        </ul>
+
+        <p
+          style="color:var(--accent);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;margin-bottom:8px;">
+          FEATURES</p>
+        <ul style="padding-left:18px;">
+          <li>✅ Fully automated scrolling — no manual scrolling needed</li>
+          <li>✅ Results persist between sessions (stored in Chrome storage)</li>
+          <li>✅ Copy the full non-followers list with one click</li>
+          <li>✅ Reset button to re-scrape fresh data anytime</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Paste & Compare -->
+    <div class="result-section">
+      <h2>COMPARE — Paste both outputs below</h2>
+
+      <span class="section-label">Following list (output from Script A)</span>
+      <textarea id="followingInput"
+        placeholder='Paste JSON array here, e.g. ["https://www.facebook.com/person1", ...]'></textarea>
+
+      <span class="section-label" style="margin-top:16px;display:block">Followers list (output from Script B)</span>
+      <textarea id="followersInput"
+        placeholder='Paste JSON array here, e.g. ["https://www.facebook.com/person1", ...]'></textarea>
+
+      <button class="parse-btn" onclick="compare()">→ Find Non-Followers</button>
+
+      <div id="output">
+        <div class="stat-row">
+          <div class="stat blue"><span class="n" id="statFollowing">0</span>
+            <div class="l">Following</div>
+          </div>
+          <div class="stat green"><span class="n" id="statFollowers">0</span>
+            <div class="l">Followers</div>
+          </div>
+          <div class="stat red"><span class="n" id="statNonFollowers">0</span>
+            <div class="l">Not following back</div>
+          </div>
+        </div>
+        <span class="section-label">Profiles you follow that don't follow you back:</span>
+        <div class="profile-list" id="profileList"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function copyScript(id, btn) {
+      const text = document.getElementById(id).textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+      });
+    }
+
+    function normalise(url) {
+      try {
+        const u = new URL(url.trim());
+        return (u.origin + u.pathname).replace(/\/$/, '').toLowerCase();
+      } catch (e) { return url.trim().toLowerCase(); }
+    }
+
+    function compare() {
+      const followingRaw = document.getElementById('followingInput').value.trim();
+      const followersRaw = document.getElementById('followersInput').value.trim();
+
+      let following, followers;
+
+      try { following = JSON.parse(followingRaw); } catch (e) {
+        alert('Following list is not valid JSON. Make sure you pasted the full output from Script A.'); return;
+      }
+      try { followers = JSON.parse(followersRaw); } catch (e) {
+        alert('Followers list is not valid JSON. Make sure you pasted the full output from Script B.'); return;
+      }
+
+      const followersSet = new Set(followers.map(normalise));
+      const nonFollowers = following.filter(u => !followersSet.has(normalise(u)));
+
+      document.getElementById('statFollowing').textContent = following.length;
+      document.getElementById('statFollowers').textContent = followers.length;
+      document.getElementById('statNonFollowers').textContent = nonFollowers.length;
+
+      const list = document.getElementById('profileList');
+      list.innerHTML = '';
+
+      if (nonFollowers.length === 0) {
+        list.innerHTML = '<div style="color:#34d399;font-family:Space Mono,monospace;font-size:13px;padding:16px 0">🎉 Everyone you follow is following you back!</div>';
+      } else {
+        nonFollowers.forEach(url => {
+          const username = url.split('/').pop();
+          const div = document.createElement('div');
+          div.className = 'profile-item';
+          div.innerHTML = `<a href="${url}" target="_blank">${url}</a><span class="tag">NOT FOLLOWING</span>`;
+          list.appendChild(div);
+        });
+      }
+
+      document.getElementById('output').style.display = 'block';
+      document.getElementById('output').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function toggleExt(btn) {
+      const guide = document.getElementById('extGuide');
+      const arrow = btn.querySelector('.ext-arrow');
+      const isOpen = guide.style.display === 'block';
+      guide.style.display = isOpen ? 'none' : 'block';
+      arrow.style.transform = isOpen ? '' : 'rotate(180deg)';
+    }
+  </script>
+</body>
+
+</html>

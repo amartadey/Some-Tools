@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
-        content="Collection of premium development tools for PHP and Python - Email diagnostics, server diagnostics, WordPress automation, and image optimization.">
+        content="Collection of premium development tools for PHP, Python, and HTML - Email diagnostics, server diagnostics, WordPress automation, image optimization, and Facebook non-followers finder.">
     <meta name="keywords"
-        content="development tools, PHP tools, Python tools, email diagnostic, server diagnostic, image optimizer, inode counter, wordpress installer">
+        content="development tools, PHP tools, Python tools, HTML tools, email diagnostic, server diagnostic, image optimizer, inode counter, wordpress installer, facebook non-followers finder">
     <meta name="author" content="Developer Tools Collection">
     <title>DevTools | Professional Utilities</title>
 
@@ -226,6 +226,96 @@
             border: 1px solid rgba(245, 158, 11, 0.3);
         }
 
+        .badge-html {
+            background: rgba(227, 79, 38, 0.2);
+            color: #f97040;
+            border: 1px solid rgba(227, 79, 38, 0.3);
+        }
+
+        .badge-extension {
+            background: rgba(99, 102, 241, 0.2);
+            color: #a5b4fc;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+
+        /* Collapsible install guide */
+        .install-toggle {
+            margin-top: 12px;
+            width: 100%;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .install-toggle:hover {
+            border-color: rgba(255, 255, 255, 0.25);
+            color: var(--text-primary);
+        }
+
+        .install-toggle .arrow {
+            margin-left: auto;
+            transition: transform 0.3s;
+        }
+
+        .install-toggle.open .arrow {
+            transform: rotate(180deg);
+        }
+
+        .install-guide {
+            display: none;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 10px;
+            padding: 16px 18px;
+            margin-top: 10px;
+            font-size: 0.85rem;
+        }
+
+        .install-guide.open {
+            display: block;
+        }
+
+        .install-guide h4 {
+            font-size: 0.8rem;
+            color: var(--text-accent);
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+            margin-top: 14px;
+        }
+
+        .install-guide h4:first-child {
+            margin-top: 0;
+        }
+
+        .install-guide ol,
+        .install-guide ul {
+            padding-left: 18px;
+            color: var(--text-secondary);
+        }
+
+        .install-guide li {
+            margin-bottom: 5px;
+            line-height: 1.5;
+        }
+
+        .install-guide code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8em;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1px 5px;
+            border-radius: 4px;
+            color: var(--text-accent);
+        }
+
         /* Tool Content */
         .tool-icon {
             font-size: 3rem;
@@ -362,7 +452,8 @@
     <header>
         <div class="container">
             <h1>DevTools Collection</h1>
-            <p class="subtitle">Premium, battle-tested utilities for PHP and Python developers. Diagnose, optimize, and
+            <p class="subtitle">Premium, battle-tested utilities for PHP, Python, and HTML developers. Diagnose,
+                optimize, and
                 deploy with confidence.</p>
         </div>
     </header>
@@ -386,7 +477,8 @@
                 <div class="tool-icon">☁️</div>
                 <h3 class="tool-title">Remote Uploader for AI1WM</h3>
                 <p class="tool-description">
-                    Companion plugin for All-in-One WP Migration. Import backups directly from URL to server, bypassing local download limits.
+                    Companion plugin for All-in-One WP Migration. Import backups directly from URL to server, bypassing
+                    local download limits.
                 </p>
                 <ul class="feature-list">
                     <li>Server-to-Server transfer</li>
@@ -425,7 +517,7 @@
                     class="btn-download" download>
                     Download Installer
                 </a>
-                
+
             </div>
 
             <!-- Email Diagnostic V3 -->
@@ -450,11 +542,10 @@
                     class="btn-download" download>
                     Download Tool
                 </a><br />
-                <a href="https://wordpress.org/plugins/wp-test-email/"
-                    class="btn-download" download>
+                <a href="https://wordpress.org/plugins/wp-test-email/" class="btn-download" download>
                     WP Email Test
                 </a>
-                
+
             </div>
 
             <!-- Server Diagnostics -->
@@ -478,6 +569,76 @@
                     class="btn-download" download>
                     Download Tool
                 </a>
+            </div>
+
+        </div>
+
+        <!-- HTML Tools -->
+        <div class="section-header">
+            <h2 class="section-title">HTML Tools</h2>
+            <div class="section-line"></div>
+        </div>
+
+        <div class="tools-grid">
+
+            <!-- FB Non-Followers Finder -->
+            <div class="tool-card">
+                <div class="badges-container">
+                    <span class="category-badge badge-html">HTML</span>
+                    <span class="category-badge badge-extension">Chrome Extension</span>
+                    <span class="category-badge badge-new">New</span>
+                </div>
+                <div class="tool-icon">👥</div>
+                <h3 class="tool-title">Facebook Non-Followers Finder</h3>
+                <p class="tool-description">
+                    Discover who you follow on Facebook that doesn't follow you back — no third-party apps or logins
+                    needed. Use the standalone HTML tool or the Chrome Extension for fully automated scrolling.
+                </p>
+                <ul class="feature-list">
+                    <li>Zero third-party access required</li>
+                    <li>Chrome Extension with auto-scroll</li>
+                    <li>Results persist between sessions</li>
+                    <li>One-click copy of non-followers list</li>
+                </ul>
+                <a href="https://raw.githubusercontent.com/amartadey/Some-Tools/main/html-tools/fb_nonfollowers.html"
+                    class="btn-download" download>
+                    ⬇ Download HTML Tool
+                </a>
+                <a href="https://raw.githubusercontent.com/amartadey/Some-Tools/main/html-tools/fb-nonfollowers-extension.zip"
+                    class="btn-download" download style="margin-top: 10px;">
+                    🧩 Download Chrome Extension (.zip)
+                </a>
+
+                <button class="install-toggle" onclick="toggleInstall(this)">
+                    📖 How to install &amp; use the extension <span class="arrow">▼</span>
+                </button>
+                <div class="install-guide">
+                    <h4>INSTALL (takes 1 minute)</h4>
+                    <ol>
+                        <li>Download and unzip the file</li>
+                        <li>Open Chrome → go to <code>chrome://extensions</code></li>
+                        <li>Toggle <strong>Developer Mode</strong> ON (top-right corner)</li>
+                        <li>Click <strong>Load unpacked</strong> → select the <code>fb-nonfollowers-extension</code>
+                            folder</li>
+                        <li>The extension icon appears in your toolbar ✅</li>
+                    </ol>
+                    <h4>HOW TO USE</h4>
+                    <ul>
+                        <li>Go to your Facebook <code>/following</code> page → click the blue 🔍 <strong>Scrape
+                                Following</strong> button (bottom-right) and wait for auto-scroll to finish</li>
+                        <li>Go to your <code>/followers</code> page → click 🔍 <strong>Scrape Followers</strong> and
+                            wait</li>
+                        <li>Click the extension icon → hit <strong>Compare Lists</strong></li>
+                        <li>See every profile that doesn't follow back, with clickable links</li>
+                    </ul>
+                    <h4>FEATURES</h4>
+                    <ul>
+                        <li>✅ Fully automated scrolling — no manual scrolling needed</li>
+                        <li>✅ Results persist between sessions (Chrome storage)</li>
+                        <li>✅ Copy the full non-followers list with one click</li>
+                        <li>✅ Reset button to re-scrape fresh data anytime</li>
+                    </ul>
+                </div>
             </div>
 
         </div>
@@ -568,6 +729,14 @@
             </p>
         </div>
     </footer>
+
+    <script>
+        function toggleInstall(btn) {
+            btn.classList.toggle('open');
+            const guide = btn.nextElementSibling;
+            guide.classList.toggle('open');
+        }
+    </script>
 
 </body>
 
