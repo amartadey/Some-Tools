@@ -5,7 +5,8 @@
  */
 
 // Configuration
-$wordpressUrl = 'https://github.com/amartadey/wordpress/releases/download/v7.0/wordpress-custom-latest.zip';
+// $wordpressUrl = 'https://github.com/amartadey/wordpress/releases/download/v7.0/wordpress-custom-latest.zip';
+$wordpressUrl = 'https://github.com/amartadey/wordpress/releases/latest/download/wordpress-custom-latest.zip';
 $zipFile = 'wordpress-latest.zip';
 $extractTo = './'; // Extract to current directory
 
