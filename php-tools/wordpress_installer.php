@@ -5,7 +5,7 @@
  */
 
 // Configuration
-$wordpressUrl = 'https://github.com/amartadey/wordpress/releases/download/v7.0/wordpress-custom-latest.zip';
+$wordpressUrl = 'https://github.com/amartadey/wordpress/releases/latest/download/wordpress-custom-latest.zip';
 $zipFile = 'wordpress-latest.zip';
 $extractTo = './'; // Extract to current directory
 
@@ -412,7 +412,8 @@ function deleteSelf() {
         
         <div class="info-box" id="infoBox">
             <strong>Installation Complete!</strong><br>
-            WordPress has been extracted to the current directory. You can now proceed with the WordPress installation by visiting your website.
+            WordPress has been extracted to this folder. Continue the setup here:<br>
+            <a id="wpAdminLink" href="#" target="_blank" rel="noopener">wp-admin</a>
         </div>
     </div>
 
@@ -510,6 +511,15 @@ function deleteSelf() {
                 
                 setProgress(100);
                 showSpinner(false);
+
+                // Build the wp-admin URL from THIS installer's location so it
+                // points at the folder WordPress was actually extracted into,
+                // not the domain root.
+                const baseUrl = window.location.href.replace(/\/[^\/]*(\?.*)?$/, '/');
+                const wpAdminUrl = baseUrl + 'wp-admin/install.php';
+                const wpAdminLink = document.getElementById('wpAdminLink');
+                wpAdminLink.href = wpAdminUrl;
+                wpAdminLink.textContent = wpAdminUrl;
                 document.getElementById('infoBox').style.display = 'block';
                 
                 // Step 4: Delete installer script (if enabled)
@@ -527,8 +537,8 @@ function deleteSelf() {
                             // Show a final message and redirect or disable further actions
                             setTimeout(() => {
                                 alert('Installation complete! The installer has been deleted. You can now close this page.');
-                                // Optionally redirect to home page
-                                // window.location.href = '/';
+                                // Optionally jump straight into the WordPress setup wizard
+                                // window.location.href = wpAdminUrl;
                             }, 2000);
                         } else {
                             updateStatus('Installation complete! Please manually delete this installer file for security.', 'success');
