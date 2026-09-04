@@ -19,13 +19,16 @@ if (isset($_GET['action'])) {
             break;
             
         case 'extract':
-            echo json_encode(extractZip($zipFile, $extractTo));
+            $deleteZip = isset($_GET['deleteZip']) && $_GET['deleteZip'] === '1';
+            $deleteSelf = isset($_GET['deleteSelf']) && $_GET['deleteSelf'] === '1';
+            $result = extractAndFinish($zipFile, $extractTo, $deleteZip, $deleteSelf);
+            echo json_encode($result);
             break;
-            
+
         case 'delete':
             echo json_encode(deleteZipFile($zipFile));
             break;
-            
+
         case 'delete_self':
             echo json_encode(deleteSelf());
             break;
@@ -127,6 +130,38 @@ function extractZip($zipFile, $extractTo) {
         'message' => "Extracted $numFiles files successfully!",
         'files' => $numFiles
     ];
+}
+
+function extractAndFinish($zipFile, $extractTo, $deleteZip, $scheduleSelfDelete) {
+    $result = extractZip($zipFile, $extractTo);
+    if (!$result['success']) {
+        return $result;
+    }
+
+    if ($deleteZip && file_exists($zipFile)) {
+        @unlink($zipFile);
+    }
+
+    // Detect where WordPress landed, relative to this installer's folder, so the
+    // JS can redirect into the subdirectory install instead of the domain root.
+    $redirectTo = '';
+    if (file_exists($extractTo . 'wp-admin/setup-config.php')) {
+        $redirectTo = 'wp-admin/setup-config.php';
+    } elseif (file_exists($extractTo . 'wordpress/wp-admin/setup-config.php')) {
+        $redirectTo = 'wordpress/wp-admin/setup-config.php';
+    }
+
+    $result['redirectTo'] = $redirectTo;
+
+    if ($scheduleSelfDelete) {
+        $selfFile = __FILE__;
+        register_shutdown_function(function () use ($selfFile) {
+            @unlink($selfFile);
+        });
+        $result['selfDeleted'] = true;
+    }
+
+    return $result;
 }
 
 function deleteZipFile($zipFile) {
@@ -412,8 +447,7 @@ function deleteSelf() {
         
         <div class="info-box" id="infoBox">
             <strong>Installation Complete!</strong><br>
-            WordPress has been extracted to this folder. Continue the setup here:<br>
-            <a id="wpAdminLink" href="#" target="_blank" rel="noopener">wp-admin</a>
+            WordPress has been extracted to the current directory. You can now proceed with the WordPress installation by visiting your website.
         </div>
     </div>
 
@@ -462,92 +496,55 @@ function deleteSelf() {
         async function startProcess() {
             const downloadBtn = document.getElementById('downloadBtn');
             downloadBtn.disabled = true;
-            
+
             // Step 1: Download
             updateStatus('Downloading WordPress... Please wait.');
             showSpinner(true);
             showProgress(true);
             setProgress(30);
-            
+
             try {
                 const downloadResponse = await fetch('?action=download');
                 const downloadResult = await downloadResponse.json();
-                
+
                 if (!downloadResult.success) {
                     throw new Error(downloadResult.message);
                 }
-                
-                setProgress(50);
-                updateStatus('Download complete! Now extracting files...');
-                
-                // Step 2: Extract
-                await new Promise(resolve => setTimeout(resolve, 500)); // Brief pause for UX
-                setProgress(70);
-                
-                const extractResponse = await fetch('?action=extract');
+
+                setProgress(55);
+                updateStatus('Download complete! Extracting files...');
+                await new Promise(resolve => setTimeout(resolve, 400));
+
+                // Step 2: Extract + delete zip + schedule self-delete — all in one request
+                // so WordPress's index.php cannot intercept subsequent calls.
+                const deleteZip = deleteAfterExtract ? '1' : '0';
+                const deleteSelf = deleteInstallerAfterCompletion ? '1' : '0';
+                const extractResponse = await fetch(
+                    `?action=extract&deleteZip=${deleteZip}&deleteSelf=${deleteSelf}`
+                );
                 const extractResult = await extractResponse.json();
-                
+
                 if (!extractResult.success) {
                     throw new Error(extractResult.message);
                 }
-                
-                setProgress(90);
-                updateStatus('Extraction complete!');
-                
-                // Step 3: Delete (if enabled)
-                if (deleteAfterExtract) {
-                    await new Promise(resolve => setTimeout(resolve, 500));
-                    const deleteResponse = await fetch('?action=delete');
-                    const deleteResult = await deleteResponse.json();
-                    
-                    if (deleteResult.success) {
-                        updateStatus('WordPress installed successfully! Zip file has been deleted.', 'success');
-                    } else {
-                        updateStatus('WordPress installed successfully! (Could not delete zip file)', 'success');
-                    }
-                } else {
-                    updateStatus('WordPress installed successfully! Zip file preserved.', 'success');
-                }
-                
+
                 setProgress(100);
                 showSpinner(false);
 
-                // Build the wp-admin URL from THIS installer's location so it
-                // points at the folder WordPress was actually extracted into,
-                // not the domain root.
-                const baseUrl = window.location.href.replace(/\/[^\/]*(\?.*)?$/, '/');
-                const wpAdminUrl = baseUrl + 'wp-admin/install.php';
-                const wpAdminLink = document.getElementById('wpAdminLink');
-                wpAdminLink.href = wpAdminUrl;
-                wpAdminLink.textContent = wpAdminUrl;
+                const zipMsg = deleteAfterExtract ? ' Zip file deleted.' : '';
+                const selfMsg = deleteInstallerAfterCompletion
+                    ? ' Installer will be removed.'
+                    : '';
+                updateStatus('WordPress installed successfully!' + zipMsg + selfMsg, 'success');
                 document.getElementById('infoBox').style.display = 'block';
-                
-                // Step 4: Delete installer script (if enabled)
-                if (deleteInstallerAfterCompletion) {
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                    updateStatus('Cleaning up... Deleting installer script.', 'success');
-                    
-                    try {
-                        const deleteSelfResponse = await fetch('?action=delete_self');
-                        const deleteSelfResult = await deleteSelfResponse.json();
-                        
-                        if (deleteSelfResult.success) {
-                            updateStatus('All done! Installer script has been removed. This page will no longer be accessible.', 'success');
-                            
-                            // Show a final message and redirect or disable further actions
-                            setTimeout(() => {
-                                alert('Installation complete! The installer has been deleted. You can now close this page.');
-                                // Optionally jump straight into the WordPress setup wizard
-                                // window.location.href = wpAdminUrl;
-                            }, 2000);
-                        } else {
-                            updateStatus('Installation complete! Please manually delete this installer file for security.', 'success');
-                        }
-                    } catch (error) {
-                        updateStatus('Installation complete! Please manually delete this installer file for security.', 'success');
-                    }
-                }
-                
+
+                // Step 3: Redirect to WordPress setup, resolved relative to this
+                // installer's folder so subdirectory installs don't jump to root.
+                const baseUrl = window.location.href.replace(/\/[^\/]*(\?.*)?$/, '/');
+                const redirectTo = baseUrl + (extractResult.redirectTo || 'wp-admin/setup-config.php');
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                window.location.href = redirectTo;
+
             } catch (error) {
                 updateStatus('Error: ' + error.message, 'error');
                 showSpinner(false);
